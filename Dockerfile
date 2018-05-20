@@ -1,15 +1,14 @@
-FROM nothingdocker/centos-node
-RUN	yum install -y gcc gcc-c++ make cmake git;
-RUN     yum install -y https://pkg.jenkins.io/redhat-stable/jenkins-2.7.4-1.1.noarch.rpm;
-RUN     yum install -y java-1.8.0-openjdk
-RUN     yum install -y initscripts;
-RUN     yum clean all;
+FROM ubuntu:16.04
+MAINTAINER Allan Espinosa "allan.espinosa@outlook.com"
 
-RUN     mkdir -p /data
+RUN apt-get update && \
+    apt-get --no-install-recommends install -q -y openjdk-8-jre-headless && \
+    rm -rf /var/lib/apt/lists/*
+    
+ADD http://mirrors.jenkins-ci.org/war/2.87/jenkins.war /opt/jenkins.war
+RUN chmod 644 /opt/jenkins.war
+ENV JENKINS_HOME /jenkins
 
-COPY    ./jenkins /etc/sysconfig/
-COPY 	entrypoint.sh /entrypoint.sh
-
+ENTRYPOINT ["java", "-jar", "/opt/jenkins.war"]
 EXPOSE 8080
-ENTRYPOINT ["/entrypoint.sh"]
-CMD ["/usr/sbin/init"]
+CMD [""]
